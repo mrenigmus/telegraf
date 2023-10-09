@@ -341,6 +341,8 @@ class TelegrafContext {
           this.deleteMessage().catch(e=>e);
         }
         else return this.editMessageCaption(text, extra);
+      }else{
+        if ( photo ) this.deleteMessage().catch(e=>e);
       }
     }
     var result;
