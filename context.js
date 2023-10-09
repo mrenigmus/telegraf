@@ -332,23 +332,29 @@ class TelegrafContext {
 
   async replyOrEdit(text, extra={}, photo=null){
     this.assert(this.chat, 'replyOrEdit')
+    var deleted = false;
     if ( this.updateType == "callback_query" ){
       await this.answerCbQuery().catch(err=>err);
       if ( this.callbackQuery.message.photo?.length ){
-        return this.editMessageCaption(text, extra);
+        if ( photo === false ){
+          deleted = true;
+          this.deleteMessage().catch(e=>e);
+        }
+        else return this.editMessageCaption(text, extra);
       }
     }
     var result;
 try {
     if ( typeof photo == "string" || typeof photo == "object" || photo?.source ){
-      result = await this.replyWithPhoto(photo, {
+  return await this.replyWithPhoto(photo, {
       caption: text,
       ...extra
     })
   }
   } catch ( err ){
-      result = await this[this.updateType == "callback_query" ? "editMessageText" : "reply"](text, extra);
+      
   }
+  result = await this[this.updateType == "callback_query" && !deleted ? "editMessageText" : "reply"](text, extra);
   return result;
     }
 
