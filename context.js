@@ -345,7 +345,7 @@ class TelegrafContext {
     }
     var result;
 try {
-    if ( typeof photo == "string" || typeof photo == "object" || photo?.source ){
+    if ( photo !== false && (typeof photo == "string" || typeof photo == "object" || photo?.source) ){
   return await this.replyWithPhoto(photo, {
       caption: text,
       ...extra
